@@ -4,13 +4,30 @@ import json
 import logging
 import traceback
 from datetime import datetime
+import pandas as pd
 
+def debug_csv_read(file_path):
+    # Read CSV with multi-level header
+    df = pd.read_csv(file_path, sep=';', header=[0, 1], skiprows=[1])
+    
+    # Flatten column names
+    df.columns = df.columns.get_level_values(0)
+    
+    # Convert Server time to datetime
+    df['Server time'] = pd.to_datetime(df['Server time'], format='%Y-%m-%d %H:%M:%S')
+    
+    print("DataFrame Columns:", list(df.columns))
+    print("\nDataFrame Head:")
+    print(df.head())
+    print("\nDataFrame Info:")
+    print(df.info())
+
+# Replace with your actual CSV path
 class SensorThingsManager:
     def __init__(self, base_url):
-        """Initialize SensorThings Manager"""
+        """Initialize SensorThings Manager with robust logging"""
         self.base_url = base_url
         
-        # Configure logging
         logging.basicConfig(
             level=logging.INFO, 
             format='%(asctime)s - %(levelname)s: %(message)s',
@@ -21,86 +38,67 @@ class SensorThingsManager:
         )
         self.logger = logging.getLogger(__name__)
 
-    def read_csv_debug(self, csv_file):
-        """Debug CSV reading process"""
+    def create_sensor(self):
+        """Create or fetch a generic sensor, ensuring unique identification"""
         try:
-            with open(csv_file, 'r') as file:
-                self.logger.info("Raw CSV content:")
-                self.logger.info(file.read())
-        except Exception as e:
-            self.logger.error(f"Error reading file: {e}")
-
-    def create_datastream(self, thing_id, observed_property_ids):
-        """Create datastreams for different measurements"""
-        datastreams = {}
-        
-        datastream_configs = {
-            'CO2 concentration': {
-                'name': 'CO2 Concentration Datastream',
-                'description': 'Measures CO2 concentration',
-                'unit_of_measurement': 'ppm'
-            },
-            'Temperature': {
-                'name': 'Temperature Datastream',
-                'description': 'Measures ambient temperature',
-                'unit_of_measurement': 'degree Celsius'
-            },
-            'Humidity': {
-                'name': 'Humidity Datastream',
-                'description': 'Measures relative humidity',
-                'unit_of_measurement': 'percentage'
-            }
-        }
-        
-        for measurement, config in datastream_configs.items():
-            datastream_payload = {
-                'name': config['name'],
-                'description': config['description'],
-                'unitOfMeasurement': {
-                    'name': config['unit_of_measurement'],
-                    'symbol': config['unit_of_measurement'],
-                    'definition': 'http://example.org/unit_definition'
-                },
-                'Thing': {'@iot.id': thing_id},
-                'ObservedProperty': {'@iot.id': observed_property_ids[measurement]},
-                'Sensor': {'@iot.id': 1}
+            # First, try to find an existing sensor
+            sensors_response = requests.get(
+                f"{self.base_url}/Sensors?$filter=name eq 'Generic Environmental Sensor'&$top=1",
+                headers={'Accept': 'application/json'}
+            )
+            
+            if sensors_response.status_code == 200:
+                sensors_data = sensors_response.json()
+                if sensors_data.get('value'):
+                    sensor_id = sensors_data['value'][0]['@iot.id']
+                    self.logger.info(f"Existing sensor found with ID: {sensor_id}")
+                    return sensor_id
+            
+            # If no existing sensor, create a new one
+            sensor_payload = {
+                'name': 'Generic Environmental Sensor',
+                'description': 'Multi-parameter sensor for CO2, Temperature, and Humidity',
+                'encodingType': 'application/pdf',
+                'metadata': 'https://example.com/sensor_specification.pdf'
             }
             
-            try:
-                response = requests.post(
-                    f"{self.base_url}/Datastreams", 
-                    json=datastream_payload,
-                    headers={'Content-Type': 'application/json'}
-                )
-                
-                if response.status_code in [200, 201]:
-                    datastream = response.json()
-                    datastreams[measurement] = datastream['@iot.id']
-                    self.logger.info(f"Created Datastream for {measurement}")
-                else:
-                    self.logger.error(f"Failed to create Datastream for {measurement}: {response.text}")
-            except Exception as e:
-                self.logger.error(f"Error creating Datastream for {measurement}: {e}")
+            sensor_response = requests.post(
+                f"{self.base_url}/Sensors", 
+                json=sensor_payload,
+                headers={'Content-Type': 'application/json'}
+            )
+            
+            if sensor_response.status_code in [200, 201]:
+                sensor = sensor_response.json()
+                self.logger.info(f"Created new sensor with ID: {sensor['@iot.id']}")
+                return sensor['@iot.id']
+            
+            self.logger.error(f"Failed to create Sensor: {sensor_response.text}")
+            return None
         
-        return datastreams
+        except Exception as e:
+            self.logger.error(f"Error in create_sensor: {e}")
+            return None
 
     def upload_to_sensorthings(self, csv_file):
-        """Upload CSV data to FROST-Server with explicit entity fetching"""
-        # Debug raw CSV content
-        self.read_csv_debug(csv_file)
-        
+        """Optimized upload process with improved CSV handling"""
         try:
-            # Skip the second row (units/format description) and use the first row as column headers
-            df = pd.read_csv(csv_file, sep=';', header=0, skiprows=[1])
+            # Read CSV with specific handling for the header rows
+            df = pd.read_csv(csv_file, sep=';', header=[0, 1], skiprows=[1])
             
-            self.logger.info(f"DataFrame columns: {list(df.columns)}")
-            self.logger.info("DataFrame first few rows:")
-            self.logger.info(str(df.head()))
+            # Flatten multi-level column names
+            df.columns = df.columns.get_level_values(0)
             
-            # Convert 'Server time' to datetime with explicit format
+            # Ensure proper datetime conversion
             df['Server time'] = pd.to_datetime(df['Server time'], format='%Y-%m-%d %H:%M:%S')
             
-            # Create Thing with additional properties
+            # Get or create sensor
+            sensor_id = self.create_sensor()
+            if not sensor_id:
+                self.logger.error("Cannot proceed without a valid Sensor")
+                return
+            
+            # Create Thing with enhanced error checking
             thing_payload = {
                 'name': 'CO2 Monitoring Station',
                 'description': 'Automated CO2, Temperature, and Humidity Monitoring Device',
@@ -109,8 +107,7 @@ class SensorThingsManager:
                     'organization': 'Your Organization'
                 }
             }
-        
-            self.logger.info("Creating Thing...")
+            
             thing_response = requests.post(
                 f"{self.base_url}/Things", 
                 json=thing_payload,
@@ -118,39 +115,46 @@ class SensorThingsManager:
             )
 
             if thing_response.status_code not in [200, 201]:
-                self.logger.error(f"Failed to create Thing: {thing_response.text}")
+                self.logger.error(f"Thing creation failed: {thing_response.text}")
                 return
             
-            # Fetch the created Thing to get its actual ID
+            # Fetch the most recently created Thing
             things_response = requests.get(
                 f"{self.base_url}/Things?$filter=name eq 'CO2 Monitoring Station'&$orderby=@iot.id desc&$top=1",
                 headers={'Accept': 'application/json'}
             )
             
-            if things_response.status_code != 200:
-                self.logger.error(f"Failed to fetch created Thing: {things_response.text}")
+            if things_response.status_code != 200 or not things_response.json().get('value'):
+                self.logger.error("Could not retrieve created Thing")
                 return
             
-            things_data = things_response.json()
-            if not things_data.get('value'):
-                self.logger.error("No Thing found after creation")
-                return
+            thing_id = things_response.json()['value'][0]['@iot.id']
             
-            thing_id = things_data['value'][0]['@iot.id']
-            self.logger.info(f"Created Thing with ID: {thing_id}")
-            
-            # Create Observed Properties with explicit fetching
-            observed_properties = {
-                'CO2 concentration': None,
-                'Temperature': None,
-                'Humidity': None
+            # Create Observed Properties with centralized error handling
+            measurement_properties = {
+                'CO2 concentration': {
+                    'name': 'CO2 Concentration Observed Property',
+                    'description': 'Measuring CO2 concentration',
+                    'definition': 'http://example.org/co2_property'
+                },
+                'Temperature': {
+                    'name': 'Temperature Observed Property',
+                    'description': 'Measuring ambient temperature',
+                    'definition': 'http://example.org/temperature_property'
+                },
+                'Humidity': {
+                    'name': 'Humidity Observed Property',
+                    'description': 'Measuring relative humidity',
+                    'definition': 'http://example.org/humidity_property'
+                }
             }
             
-            for measurement in observed_properties.keys():
+            observed_properties = {}
+            for measurement, config in measurement_properties.items():
                 op_payload = {
-                    'name': f'{measurement} Observed Property',
-                    'description': f'Measuring {measurement}',
-                    'definition': 'http://example.org/property_definition'
+                    'name': config['name'],
+                    'description': config['description'],
+                    'definition': config['definition']
                 }
                 
                 op_response = requests.post(
@@ -159,110 +163,68 @@ class SensorThingsManager:
                     headers={'Content-Type': 'application/json'}
                 )
                 
-                if op_response.status_code not in [200, 201]:
-                    self.logger.error(f"Failed to create Observed Property for {measurement}: {op_response.text}")
-                    continue
-                
-                # Fetch the created Observed Property
-                op_fetch_response = requests.get(
-                    f"{self.base_url}/ObservedProperties?$filter=name eq '{measurement} Observed Property'&$top=1",
-                    headers={'Accept': 'application/json'}
-                )
-                
-                if op_fetch_response.status_code == 200:
-                    op_data = op_fetch_response.json()
-                    if op_data.get('value'):
-                        observed_properties[measurement] = op_data['value'][0]['@iot.id']
-                        self.logger.info(f"Created Observed Property for {measurement} with ID: {observed_properties[measurement]}")
+                if op_response.status_code in [200, 201]:
+                    op_data = op_response.json()
+                    observed_properties[measurement] = op_data['@iot.id']
+                else:
+                    self.logger.error(f"Failed to create Observed Property for {measurement}")
             
-            # Create Datastreams with explicit fetching
+            # Create Datastreams
             datastreams = {}
-            datastream_configs = {
-                'CO2 concentration': {
-                    'name': 'CO2 Concentration Datastream',
-                    'description': 'Measures CO2 concentration',
-                    'unit_of_measurement': 'ppm'
-                },
-                'Temperature': {
-                    'name': 'Temperature Datastream',
-                    'description': 'Measures ambient temperature',
-                    'unit_of_measurement': 'degree Celsius'
-                },
-                'Humidity': {
-                    'name': 'Humidity Datastream',
-                    'description': 'Measures relative humidity',
-                    'unit_of_measurement': 'percentage'
-                }
-            }
-            
-            for measurement, config in datastream_configs.items():
-                if observed_properties[measurement] is None:
-                    self.logger.error(f"Skipping Datastream creation for {measurement} due to missing Observed Property")
-                    continue
-                
+            for measurement, op_id in observed_properties.items():
                 datastream_payload = {
-                    'name': config['name'],
-                    'description': config['description'],
+                    'name': f'{measurement} Datastream',
+                    'description': f'Measures {measurement}',
                     'unitOfMeasurement': {
-                        'name': config['unit_of_measurement'],
-                        'symbol': config['unit_of_measurement'],
+                        'name': measurement,
+                        'symbol': measurement,
                         'definition': 'http://example.org/unit_definition'
                     },
-                    'observationType': 'http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement',
                     'Thing': {'@iot.id': thing_id},
-                    'ObservedProperty': {'@iot.id': observed_properties[measurement]},
-                    'Sensor': {'@iot.id': 1}
+                    'ObservedProperty': {'@iot.id': op_id},
+                    'Sensor': {'@iot.id': sensor_id}
                 }
                 
-                datastream_response = requests.post(
+                ds_response = requests.post(
                     f"{self.base_url}/Datastreams", 
                     json=datastream_payload,
                     headers={'Content-Type': 'application/json'}
                 )
                 
-                if datastream_response.status_code not in [200, 201]:
-                    self.logger.error(f"Failed to create Datastream for {measurement}: {datastream_response.text}")
-                    continue
-                
-                # Fetch the created Datastream
-                datastream_fetch_response = requests.get(
-                    f"{self.base_url}/Datastreams?$filter=name eq '{config['name']}'&$top=1",
-                    headers={'Accept': 'application/json'}
-                )
-                
-                if datastream_fetch_response.status_code == 200:
-                    datastream_data = datastream_fetch_response.json()
-                    if datastream_data.get('value'):
-                        datastreams[measurement] = datastream_data['value'][0]['@iot.id']
-                        self.logger.info(f"Created Datastream for {measurement} with ID: {datastreams[measurement]}")
+                if ds_response.status_code in [200, 201]:
+                    ds_data = ds_response.json()
+                    datastreams[measurement] = ds_data['@iot.id']
+                else:
+                    self.logger.error(f"Failed to create Datastream for {measurement}")
             
-            # Upload Observations (rest of the code remains the same)
+            # Upload Observations with proper handling
             for _, row in df.iterrows():
-                for measurement, datastream_id in datastreams.items():
-                    observation_payload = {
-                        'phenomenonTime': row['Server time'].isoformat(),
-                        'resultTime': row['Server time'].isoformat(),
-                        'result': row[measurement],
-                        'Datastream': {'@iot.id': datastream_id}
-                    }
-                    
-                    try:
-                        response = requests.post(
-                            f"{self.base_url}/Observations",
-                            json=observation_payload,
-                            headers={'Content-Type': 'application/json'}
-                        )
+                for measurement in ['CO2 concentration', 'Temperature', 'Humidity']:
+                    if measurement in datastreams:
+                        observation_payload = {
+                            'phenomenonTime': row['Server time'].isoformat(),
+                            'resultTime': row['Server time'].isoformat(),
+                            'result': row[measurement],
+                            'Datastream': {'@iot.id': datastreams[measurement]}
+                        }
                         
-                        if response.status_code not in [200, 201]:
-                            self.logger.error(f"Failed to upload {measurement} observation: {response.text}")
-                    
-                    except Exception as e:
-                        self.logger.error(f"Error uploading {measurement} observation: {e}")
+                        try:
+                            response = requests.post(
+                                f"{self.base_url}/Observations",
+                                json=observation_payload,
+                                headers={'Content-Type': 'application/json'}
+                            )
+                            
+                            if response.status_code not in [200, 201]:
+                                self.logger.error(f"Failed to upload {measurement} observation: {response.text}")
+                        
+                        except Exception as e:
+                            self.logger.error(f"Error uploading {measurement} observation: {e}")
             
             self.logger.info("Data upload completed successfully!")
         
         except Exception as e:
-            self.logger.error(f"Error in data upload process: {e}")
+            self.logger.error(f"Critical error in data upload: {e}")
             self.logger.error(traceback.format_exc())
 
     def fetch_datastreams(self, thing_id):
@@ -332,6 +294,7 @@ if __name__ == "__main__":
     CSV_FILE_PATH = "CO2sensors_.csv"
     THING_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     OUTPUT_FILE = "observations_data.json"
+    debug_csv_read('CO2sensors_.csv')
 
     # Create manager instance
     manager = SensorThingsManager(BASE_URL)
