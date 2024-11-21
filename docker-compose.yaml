@@ -2,7 +2,6 @@ services:
   web:
     image: fraunhoferiosb/frost-server:latest
     environment:
-      # For all settings see: https://fraunhoferiosb.github.io/FROST-Server/settings/settings.html
       - serviceRootUrl=http://localhost:8080/FROST-Server
       - plugins_multiDatastream.enable=false
       - http_cors_enable=true
@@ -34,4 +33,4 @@ services:
       retries: 5
 
 volumes:
-    postgis_volume:
+  postgis_volume:
