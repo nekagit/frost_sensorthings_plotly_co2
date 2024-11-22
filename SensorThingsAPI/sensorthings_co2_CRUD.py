@@ -5,22 +5,7 @@ import logging
 import traceback
 from datetime import datetime
 import pandas as pd
-
-def debug_csv_read(file_path):
-    # Read CSV with multi-level header
-    df = pd.read_csv(file_path, sep=';', header=[0, 1], skiprows=[1])
-    
-    # Flatten column names
-    df.columns = df.columns.get_level_values(0)
-    
-    # Convert Server time to datetime
-    df['Server time'] = pd.to_datetime(df['Server time'], format='%Y-%m-%d %H:%M:%S')
-    
-    print("DataFrame Columns:", list(df.columns))
-    print("\nDataFrame Head:")
-    print(df.head())
-    print("\nDataFrame Info:")
-    print(df.info())
+import sys
 
 # Replace with your actual CSV path
 class SensorThingsManager:
@@ -46,7 +31,7 @@ class SensorThingsManager:
                 f"{self.base_url}/Sensors?$filter=name eq 'Generic Environmental Sensor'&$top=1",
                 headers={'Accept': 'application/json'}
             )
-            
+            print(sensors_response)
             if sensors_response.status_code == 200:
                 sensors_data = sensors_response.json()
                 if sensors_data.get('value'):
@@ -67,6 +52,7 @@ class SensorThingsManager:
                 json=sensor_payload,
                 headers={'Content-Type': 'application/json'}
             )
+            print(sensors_response)
             
             if sensor_response.status_code in [200, 201]:
                 sensor = sensor_response.json()
@@ -98,128 +84,130 @@ class SensorThingsManager:
                 self.logger.error("Cannot proceed without a valid Sensor")
                 return
             
-            # Create Thing with enhanced error checking
-            thing_payload = {
-                'name': 'CO2 Monitoring Station',
-                'description': 'Automated CO2, Temperature, and Humidity Monitoring Device',
-                'properties': {
-                    'location': 'Monitoring Site',
-                    'organization': 'Your Organization'
-                }
-            }
+            # # Create Thing with enhanced error checking
+            # thing_payload = {
+            #     'name': 'CO2 Monitoring Station',
+            #     'description': 'Automated CO2, Temperature, and Humidity Monitoring Device',
+            #     'properties': {
+            #         'location': 'Monitoring Site',
+            #         'organization': 'Your Organization'
+            #     }
+            # }
             
-            thing_response = requests.post(
-                f"{self.base_url}/Things", 
-                json=thing_payload,
-                headers={'Content-Type': 'application/json'}
-            )
+            # thing_response = requests.post(
+            #     f"{self.base_url}/Things", 
+            #     json=thing_payload,
+            #     headers={'Content-Type': 'application/json'}
+            # )
 
-            if thing_response.status_code not in [200, 201]:
-                self.logger.error(f"Thing creation failed: {thing_response.text}")
-                return
+            # if thing_response.status_code not in [200, 201]:
+            #     self.logger.error(f"Thing creation failed: {thing_response.text}")
+            #     return
             
-            # Fetch the most recently created Thing
-            things_response = requests.get(
-                f"{self.base_url}/Things?$filter=name eq 'CO2 Monitoring Station'&$orderby=@iot.id desc&$top=1",
-                headers={'Accept': 'application/json'}
-            )
+            # # Fetch the most recently created Thing
+            # things_response = requests.get(
+            #     f"{self.base_url}/Things?$filter=name eq 'CO2 Monitoring Station'&$orderby=@iot.id desc&$top=1",
+            #     headers={'Accept': 'application/json'}
+            # )
             
-            if things_response.status_code != 200 or not things_response.json().get('value'):
-                self.logger.error("Could not retrieve created Thing")
-                return
+            # self.logger.info(things_response)
             
-            thing_id = things_response.json()['value'][0]['@iot.id']
+            # if things_response.status_code != 200 or not things_response.json().get('value'):
+            #     self.logger.error("Could not retrieve created Thing")
+            #     return
             
-            # Create Observed Properties with centralized error handling
-            measurement_properties = {
-                'CO2 concentration': {
-                    'name': 'CO2 Concentration Observed Property',
-                    'description': 'Measuring CO2 concentration',
-                    'definition': 'http://example.org/co2_property'
-                },
-                'Temperature': {
-                    'name': 'Temperature Observed Property',
-                    'description': 'Measuring ambient temperature',
-                    'definition': 'http://example.org/temperature_property'
-                },
-                'Humidity': {
-                    'name': 'Humidity Observed Property',
-                    'description': 'Measuring relative humidity',
-                    'definition': 'http://example.org/humidity_property'
-                }
-            }
+            # thing_id = things_response.json()['value'][0]['@iot.id']
             
-            observed_properties = {}
-            for measurement, config in measurement_properties.items():
-                op_payload = {
-                    'name': config['name'],
-                    'description': config['description'],
-                    'definition': config['definition']
-                }
+            # # Create Observed Properties with centralized error handling
+            # measurement_properties = {
+            #     'CO2 concentration': {
+            #         'name': 'CO2 Concentration Observed Property',
+            #         'description': 'Measuring CO2 concentration',
+            #         'definition': 'http://example.org/co2_property'
+            #     },
+            #     'Temperature': {
+            #         'name': 'Temperature Observed Property',
+            #         'description': 'Measuring ambient temperature',
+            #         'definition': 'http://example.org/temperature_property'
+            #     },
+            #     'Humidity': {
+            #         'name': 'Humidity Observed Property',
+            #         'description': 'Measuring relative humidity',
+            #         'definition': 'http://example.org/humidity_property'
+            #     }
+            # }
+            
+            # observed_properties = {}
+            # for measurement, config in measurement_properties.items():
+            #     op_payload = {
+            #         'name': config['name'],
+            #         'description': config['description'],
+            #         'definition': config['definition']
+            #     }
                 
-                op_response = requests.post(
-                    f"{self.base_url}/ObservedProperties", 
-                    json=op_payload,
-                    headers={'Content-Type': 'application/json'}
-                )
+            #     op_response = requests.post(
+            #         f"{self.base_url}/ObservedProperties", 
+            #         json=op_payload,
+            #         headers={'Content-Type': 'application/json'}
+            #     )
                 
-                if op_response.status_code in [200, 201]:
-                    op_data = op_response.json()
-                    observed_properties[measurement] = op_data['@iot.id']
-                else:
-                    self.logger.error(f"Failed to create Observed Property for {measurement}")
+            #     if op_response.status_code in [200, 201]:
+            #         op_data = op_response.json()
+            #         observed_properties[measurement] = op_data['@iot.id']
+            #     else:
+            #         self.logger.error(f"Failed to create Observed Property for {measurement}")
             
-            # Create Datastreams
-            datastreams = {}
-            for measurement, op_id in observed_properties.items():
-                datastream_payload = {
-                    'name': f'{measurement} Datastream',
-                    'description': f'Measures {measurement}',
-                    'unitOfMeasurement': {
-                        'name': measurement,
-                        'symbol': measurement,
-                        'definition': 'http://example.org/unit_definition'
-                    },
-                    'Thing': {'@iot.id': thing_id},
-                    'ObservedProperty': {'@iot.id': op_id},
-                    'Sensor': {'@iot.id': sensor_id}
-                }
+            # # Create Datastreams
+            # datastreams = {}
+            # for measurement, op_id in observed_properties.items():
+            #     datastream_payload = {
+            #         'name': f'{measurement} Datastream',
+            #         'description': f'Measures {measurement}',
+            #         'unitOfMeasurement': {
+            #             'name': measurement,
+            #             'symbol': measurement,
+            #             'definition': 'http://example.org/unit_definition'
+            #         },
+            #         'Thing': {'@iot.id': thing_id},
+            #         'ObservedProperty': {'@iot.id': op_id},
+            #         'Sensor': {'@iot.id': sensor_id}
+            #     }
                 
-                ds_response = requests.post(
-                    f"{self.base_url}/Datastreams", 
-                    json=datastream_payload,
-                    headers={'Content-Type': 'application/json'}
-                )
+            #     ds_response = requests.post(
+            #         f"{self.base_url}/Datastreams", 
+            #         json=datastream_payload,
+            #         headers={'Content-Type': 'application/json'}
+            #     )
                 
-                if ds_response.status_code in [200, 201]:
-                    ds_data = ds_response.json()
-                    datastreams[measurement] = ds_data['@iot.id']
-                else:
-                    self.logger.error(f"Failed to create Datastream for {measurement}")
+            #     if ds_response.status_code in [200, 201]:
+            #         ds_data = ds_response.json()
+            #         datastreams[measurement] = ds_data['@iot.id']
+            #     else:
+            #         self.logger.error(f"Failed to create Datastream for {measurement}")
             
-            # Upload Observations with proper handling
-            for _, row in df.iterrows():
-                for measurement in ['CO2 concentration', 'Temperature', 'Humidity']:
-                    if measurement in datastreams:
-                        observation_payload = {
-                            'phenomenonTime': row['Server time'].isoformat(),
-                            'resultTime': row['Server time'].isoformat(),
-                            'result': row[measurement],
-                            'Datastream': {'@iot.id': datastreams[measurement]}
-                        }
+            # # Upload Observations with proper handling
+            # for _, row in df.iterrows():
+            #     for measurement in ['CO2 concentration', 'Temperature', 'Humidity']:
+            #         if measurement in datastreams:
+            #             observation_payload = {
+            #                 'phenomenonTime': row['Server time'].isoformat(),
+            #                 'resultTime': row['Server time'].isoformat(),
+            #                 'result': row[measurement],
+            #                 'Datastream': {'@iot.id': datastreams[measurement]}
+            #             }
                         
-                        try:
-                            response = requests.post(
-                                f"{self.base_url}/Observations",
-                                json=observation_payload,
-                                headers={'Content-Type': 'application/json'}
-                            )
+            #             try:
+            #                 response = requests.post(
+            #                     f"{self.base_url}/Observations",
+            #                     json=observation_payload,
+            #                     headers={'Content-Type': 'application/json'}
+            #                 )
                             
-                            if response.status_code not in [200, 201]:
-                                self.logger.error(f"Failed to upload {measurement} observation: {response.text}")
+            #                 if response.status_code not in [200, 201]:
+            #                     self.logger.error(f"Failed to upload {measurement} observation: {response.text}")
                         
-                        except Exception as e:
-                            self.logger.error(f"Error uploading {measurement} observation: {e}")
+            #             except Exception as e:
+            #                 self.logger.error(f"Error uploading {measurement} observation: {e}")
             
             self.logger.info("Data upload completed successfully!")
         
@@ -294,16 +282,16 @@ if __name__ == "__main__":
     CSV_FILE_PATH = "CO2sensors_.csv"
     THING_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     OUTPUT_FILE = "observations_data.json"
-    debug_csv_read('CO2sensors_.csv')
-
+    # helper.debug_csv_read('CO2sensors_.csv')
     # Create manager instance
     manager = SensorThingsManager(BASE_URL)
-
+    
     # Upload CSV data
     manager.upload_to_sensorthings(CSV_FILE_PATH)
+    print('finished upload')
 
-    # Fetch and save observations
-    manager.fetch_and_save_data(THING_IDS, OUTPUT_FILE)
+    # # Fetch and save observations
+    # manager.fetch_and_save_data(THING_IDS, OUTPUT_FILE)
     
     
     
