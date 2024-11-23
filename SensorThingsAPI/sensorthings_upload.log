@@ -1,2 +1,76 @@
 2024-11-22 11:50:31,504 - INFO: Existing sensor found with ID: 1
 2024-11-22 11:50:31,504 - INFO: Data upload completed successfully!
+2024-11-22 18:37:10,557 - INFO: Existing sensor found with ID: 1
+2024-11-22 18:37:10,636 - INFO: <Response [200]>
+2024-11-22 18:37:10,636 - INFO: Data upload completed successfully!
+2024-11-22 18:38:47,300 - INFO: Existing sensor found with ID: 1
+2024-11-22 18:38:47,336 - INFO: things_response
+2024-11-22 18:38:47,336 - INFO: <Response [200]>
+2024-11-22 18:38:47,338 - INFO: Data upload completed successfully!
+2024-11-22 18:39:23,811 - INFO: Existing sensor found with ID: 1
+2024-11-22 18:39:23,826 - INFO: things_response
+2024-11-22 18:39:23,835 - INFO: <Response [200]>
+2024-11-22 18:39:23,835 - INFO: Data upload completed successfully!
+2024-11-22 18:41:17,886 - INFO: Data upload completed successfully!
+2024-11-22 18:41:50,645 - INFO: Data upload completed successfully!
+2024-11-23 14:58:28,377 - ERROR: Error in create_sensor: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /FROST-Server/v1.1/Sensors?$filter=name%20eq%20'Generic%20Environmental%20Sensor'&$top=1 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000027C6B5A2F60>: Failed to establish a new connection: [WinError 10061] Es konnte keine Verbindung hergestellt werden, da der Zielcomputer die Verbindung verweigerte'))
+2024-11-23 14:58:28,378 - ERROR: Cannot proceed without a valid Sensor
+2024-11-23 14:59:30,816 - INFO: Data upload completed successfully!
+2024-11-23 15:03:08,994 - INFO: Data upload completed successfully!
+2024-11-23 15:03:33,188 - INFO: Data upload completed successfully!
+2024-11-23 15:04:33,094 - INFO: <Response [200]>
+2024-11-23 15:04:33,133 - ERROR: Critical error in data upload: Expecting value: line 1 column 1 (char 0)
+2024-11-23 15:04:33,166 - ERROR: Traceback (most recent call last):
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\models.py", line 974, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Nenad\Documents\Laptop\BytesCoding\Ahsen\frost_sensorthings_plotly_co2_ahsen\SensorThingsAPI\sensorthings_co2_CRUD.py", line 158, in upload_to_sensorthings
+    op_data = op_response.json()
+              ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\models.py", line 978, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+2024-11-23 15:05:54,231 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/Things(34)', '@iot.id': 34, 'name': 'CO2 Monitoring Station', 'description': 'Automated CO2, Temperature, and Humidity Monitoring Device', 'properties': {'location': 'Monitoring Site', 'organization': 'Your Organization'}, 'HistoricalLocations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(34)/HistoricalLocations', 'Locations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(34)/Locations', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(34)/Datastreams'}], '@iot.nextLink': 'http://localhost:8080/FROST-Server/v1.1/Things?$top=1&$skip=1&$filter=%28name+eq+%27CO2+Monitoring+Station%27%29&$orderby=%40iot.id+desc&$skipFilter=%28%40iot.id+lt+34%29'}
+2024-11-23 15:05:54,231 - INFO: Data upload completed successfully!
+2024-11-23 15:07:16,570 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/Things(35)', '@iot.id': 35, 'name': 'CO2 Monitoring Station', 'description': 'Automated CO2, Temperature, and Humidity Monitoring Device', 'properties': {'location': 'Monitoring Site', 'organization': 'Your Organization'}, 'HistoricalLocations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(35)/HistoricalLocations', 'Locations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(35)/Locations', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(35)/Datastreams'}], '@iot.nextLink': 'http://localhost:8080/FROST-Server/v1.1/Things?$top=1&$skip=1&$filter=%28name+eq+%27CO2+Monitoring+Station%27%29&$orderby=%40iot.id+desc&$skipFilter=%28%40iot.id+lt+35%29'}
+2024-11-23 15:07:16,605 - INFO: Data upload completed successfully!
+2024-11-23 15:07:42,651 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/Things(36)', '@iot.id': 36, 'name': 'CO2 Monitoring Station', 'description': 'Automated CO2, Temperature, and Humidity Monitoring Device', 'properties': {'location': 'Monitoring Site', 'organization': 'Your Organization'}, 'HistoricalLocations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(36)/HistoricalLocations', 'Locations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(36)/Locations', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(36)/Datastreams'}], '@iot.nextLink': 'http://localhost:8080/FROST-Server/v1.1/Things?$top=1&$skip=1&$filter=%28name+eq+%27CO2+Monitoring+Station%27%29&$orderby=%40iot.id+desc&$skipFilter=%28%40iot.id+lt+36%29'}
+2024-11-23 15:07:42,687 - ERROR: Critical error in data upload: Expecting value: line 1 column 1 (char 0)
+2024-11-23 15:07:42,690 - ERROR: Traceback (most recent call last):
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\models.py", line 974, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Nenad\Documents\Laptop\BytesCoding\Ahsen\frost_sensorthings_plotly_co2_ahsen\SensorThingsAPI\sensorthings_co2_CRUD.py", line 158, in upload_to_sensorthings
+    print("Response op_response:", op_response.json())
+                                   ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\models.py", line 978, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
