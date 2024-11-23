@@ -1,76 +1,140 @@
-2024-11-22 11:50:31,504 - INFO: Existing sensor found with ID: 1
-2024-11-22 11:50:31,504 - INFO: Data upload completed successfully!
-2024-11-22 18:37:10,557 - INFO: Existing sensor found with ID: 1
-2024-11-22 18:37:10,636 - INFO: <Response [200]>
-2024-11-22 18:37:10,636 - INFO: Data upload completed successfully!
-2024-11-22 18:38:47,300 - INFO: Existing sensor found with ID: 1
-2024-11-22 18:38:47,336 - INFO: things_response
-2024-11-22 18:38:47,336 - INFO: <Response [200]>
-2024-11-22 18:38:47,338 - INFO: Data upload completed successfully!
-2024-11-22 18:39:23,811 - INFO: Existing sensor found with ID: 1
-2024-11-22 18:39:23,826 - INFO: things_response
-2024-11-22 18:39:23,835 - INFO: <Response [200]>
-2024-11-22 18:39:23,835 - INFO: Data upload completed successfully!
-2024-11-22 18:41:17,886 - INFO: Data upload completed successfully!
-2024-11-22 18:41:50,645 - INFO: Data upload completed successfully!
-2024-11-23 14:58:28,377 - ERROR: Error in create_sensor: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /FROST-Server/v1.1/Sensors?$filter=name%20eq%20'Generic%20Environmental%20Sensor'&$top=1 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000027C6B5A2F60>: Failed to establish a new connection: [WinError 10061] Es konnte keine Verbindung hergestellt werden, da der Zielcomputer die Verbindung verweigerte'))
-2024-11-23 14:58:28,378 - ERROR: Cannot proceed without a valid Sensor
-2024-11-23 14:59:30,816 - INFO: Data upload completed successfully!
-2024-11-23 15:03:08,994 - INFO: Data upload completed successfully!
-2024-11-23 15:03:33,188 - INFO: Data upload completed successfully!
-2024-11-23 15:04:33,094 - INFO: <Response [200]>
-2024-11-23 15:04:33,133 - ERROR: Critical error in data upload: Expecting value: line 1 column 1 (char 0)
-2024-11-23 15:04:33,166 - ERROR: Traceback (most recent call last):
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\models.py", line 974, in json
-    return complexjson.loads(self.text, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 346, in loads
-    return _default_decoder.decode(s)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 337, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 355, in raw_decode
-    raise JSONDecodeError("Expecting value", s, err.value) from None
-json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\Nenad\Documents\Laptop\BytesCoding\Ahsen\frost_sensorthings_plotly_co2_ahsen\SensorThingsAPI\sensorthings_co2_CRUD.py", line 158, in upload_to_sensorthings
-    op_data = op_response.json()
-              ^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\models.py", line 978, in json
-    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
-requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-
-2024-11-23 15:05:54,231 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/Things(34)', '@iot.id': 34, 'name': 'CO2 Monitoring Station', 'description': 'Automated CO2, Temperature, and Humidity Monitoring Device', 'properties': {'location': 'Monitoring Site', 'organization': 'Your Organization'}, 'HistoricalLocations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(34)/HistoricalLocations', 'Locations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(34)/Locations', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(34)/Datastreams'}], '@iot.nextLink': 'http://localhost:8080/FROST-Server/v1.1/Things?$top=1&$skip=1&$filter=%28name+eq+%27CO2+Monitoring+Station%27%29&$orderby=%40iot.id+desc&$skipFilter=%28%40iot.id+lt+34%29'}
-2024-11-23 15:05:54,231 - INFO: Data upload completed successfully!
-2024-11-23 15:07:16,570 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/Things(35)', '@iot.id': 35, 'name': 'CO2 Monitoring Station', 'description': 'Automated CO2, Temperature, and Humidity Monitoring Device', 'properties': {'location': 'Monitoring Site', 'organization': 'Your Organization'}, 'HistoricalLocations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(35)/HistoricalLocations', 'Locations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(35)/Locations', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(35)/Datastreams'}], '@iot.nextLink': 'http://localhost:8080/FROST-Server/v1.1/Things?$top=1&$skip=1&$filter=%28name+eq+%27CO2+Monitoring+Station%27%29&$orderby=%40iot.id+desc&$skipFilter=%28%40iot.id+lt+35%29'}
-2024-11-23 15:07:16,605 - INFO: Data upload completed successfully!
-2024-11-23 15:07:42,651 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/Things(36)', '@iot.id': 36, 'name': 'CO2 Monitoring Station', 'description': 'Automated CO2, Temperature, and Humidity Monitoring Device', 'properties': {'location': 'Monitoring Site', 'organization': 'Your Organization'}, 'HistoricalLocations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(36)/HistoricalLocations', 'Locations@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(36)/Locations', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/Things(36)/Datastreams'}], '@iot.nextLink': 'http://localhost:8080/FROST-Server/v1.1/Things?$top=1&$skip=1&$filter=%28name+eq+%27CO2+Monitoring+Station%27%29&$orderby=%40iot.id+desc&$skipFilter=%28%40iot.id+lt+36%29'}
-2024-11-23 15:07:42,687 - ERROR: Critical error in data upload: Expecting value: line 1 column 1 (char 0)
-2024-11-23 15:07:42,690 - ERROR: Traceback (most recent call last):
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\models.py", line 974, in json
-    return complexjson.loads(self.text, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 346, in loads
-    return _default_decoder.decode(s)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 337, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 355, in raw_decode
-    raise JSONDecodeError("Expecting value", s, err.value) from None
-json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\Nenad\Documents\Laptop\BytesCoding\Ahsen\frost_sensorthings_plotly_co2_ahsen\SensorThingsAPI\sensorthings_co2_CRUD.py", line 158, in upload_to_sensorthings
-    print("Response op_response:", op_response.json())
-                                   ^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Nenad\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\models.py", line 978, in json
-    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
-requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-
+2024-11-23 15:24:24,771 - INFO: Existing sensor found with ID: 1
+2024-11-23 15:24:24,780 - INFO: Existing Thing found with ID: 37
+2024-11-23 15:24:24,789 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(20)', '@iot.id': 20, 'name': 'CO2 Concentration', 'definition': 'http://example.org/parameters/co2', 'description': 'Carbon dioxide concentration in air', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(20)/Datastreams'}]}
+2024-11-23 15:24:24,800 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(21)', '@iot.id': 21, 'name': 'Air Temperature', 'definition': 'http://example.org/parameters/temperature', 'description': 'Temperature of the air', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(21)/Datastreams'}]}
+2024-11-23 15:24:24,812 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(22)', '@iot.id': 22, 'name': 'Relative Humidity', 'definition': 'http://example.org/parameters/humidity', 'description': 'Relative humidity in air', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(22)/Datastreams'}]}
+2024-11-23 15:24:24,899 - ERROR: Error creating Datastream: Expecting value: line 1 column 1 (char 0)
+2024-11-23 15:24:24,928 - ERROR: Error creating Datastream: Expecting value: line 1 column 1 (char 0)
+2024-11-23 15:24:24,956 - ERROR: Error creating Datastream: Expecting value: line 1 column 1 (char 0)
+2024-11-23 15:24:24,968 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:24:24,976 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:24:24,985 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:24:24,994 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:24:25,002 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:24:25,010 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:24:25,020 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:24:25,030 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:24:25,039 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:24:25,040 - INFO: Successfully uploaded data for Room A1
+2024-11-23 15:25:06,734 - INFO: Existing sensor found with ID: 1
+2024-11-23 15:25:06,749 - INFO: Existing Thing found with ID: 37
+2024-11-23 15:25:06,761 - INFO: asdfasdfasdf
+2024-11-23 15:25:06,762 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(20)', '@iot.id': 20, 'name': 'CO2 Concentration', 'definition': 'http://example.org/parameters/co2', 'description': 'Carbon dioxide concentration in air', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(20)/Datastreams'}]}
+2024-11-23 15:25:06,765 - INFO: asdfasdfasdf
+2024-11-23 15:25:06,775 - INFO: asdfasdfasdf
+2024-11-23 15:25:06,776 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(21)', '@iot.id': 21, 'name': 'Air Temperature', 'definition': 'http://example.org/parameters/temperature', 'description': 'Temperature of the air', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(21)/Datastreams'}]}
+2024-11-23 15:25:06,777 - INFO: asdfasdfasdf
+2024-11-23 15:25:06,787 - INFO: asdfasdfasdf
+2024-11-23 15:25:06,788 - INFO: {'value': [{'@iot.selfLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(22)', '@iot.id': 22, 'name': 'Relative Humidity', 'definition': 'http://example.org/parameters/humidity', 'description': 'Relative humidity in air', 'Datastreams@iot.navigationLink': 'http://localhost:8080/FROST-Server/v1.1/ObservedProperties(22)/Datastreams'}]}
+2024-11-23 15:25:06,789 - INFO: asdfasdfasdf
+2024-11-23 15:25:06,852 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:25:06,858 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:25:06,866 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:25:06,874 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:25:06,881 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:25:06,889 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:25:06,896 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:25:06,904 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:25:06,911 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:25:06,912 - INFO: Successfully uploaded data for Room A1
+2024-11-23 15:25:58,100 - INFO: Existing sensor found with ID: 1
+2024-11-23 15:25:58,109 - INFO: Existing Thing found with ID: 37
+2024-11-23 15:25:58,118 - INFO: asdfasdfasdf
+2024-11-23 15:25:58,119 - INFO: 20
+2024-11-23 15:25:58,119 - INFO: asdfasdfasdf
+2024-11-23 15:25:58,131 - INFO: asdfasdfasdf
+2024-11-23 15:25:58,131 - INFO: 21
+2024-11-23 15:25:58,131 - INFO: asdfasdfasdf
+2024-11-23 15:25:58,141 - INFO: asdfasdfasdf
+2024-11-23 15:25:58,142 - INFO: 22
+2024-11-23 15:25:58,142 - INFO: asdfasdfasdf
+2024-11-23 15:25:58,180 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:25:58,187 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:25:58,194 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:25:58,202 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:25:58,210 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:25:58,219 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:25:58,229 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:25:58,237 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:25:58,245 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:25:58,246 - INFO: Successfully uploaded data for Room A1
+2024-11-23 15:27:15,697 - INFO: Existing sensor found with ID: 1
+2024-11-23 15:27:15,706 - INFO: Existing Thing found with ID: 37
+2024-11-23 15:27:15,714 - INFO: asdfasdfasdf
+2024-11-23 15:27:15,714 - INFO: 20
+2024-11-23 15:27:15,714 - INFO: asdfasdfasdf
+2024-11-23 15:27:15,723 - INFO: asdfasdfasdf
+2024-11-23 15:27:15,725 - INFO: 21
+2024-11-23 15:27:15,725 - INFO: asdfasdfasdf
+2024-11-23 15:27:15,734 - INFO: asdfasdfasdf
+2024-11-23 15:27:15,735 - INFO: 22
+2024-11-23 15:27:15,735 - INFO: asdfasdfasdf
+2024-11-23 15:27:15,779 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:27:15,788 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:27:15,796 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:24:17"}
+2024-11-23 15:27:15,804 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:27:15,813 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:27:15,822 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:32:37"}
+2024-11-23 15:27:15,834 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:27:15,844 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:27:15,852 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"Incorrect request: Failed to parse TimeInterval 2021-04-19T22:37:45"}
+2024-11-23 15:27:15,853 - INFO: Successfully uploaded data for Room A1
+2024-11-23 15:55:40,972 - INFO: Existing sensor found with ID: 1
+2024-11-23 15:55:40,983 - INFO: Existing Thing found with ID: 37
+2024-11-23 15:55:40,994 - INFO: asdfasdfasdf
+2024-11-23 15:55:40,994 - INFO: 20
+2024-11-23 15:55:40,994 - INFO: asdfasdfasdf
+2024-11-23 15:55:41,004 - INFO: asdfasdfasdf
+2024-11-23 15:55:41,004 - INFO: 21
+2024-11-23 15:55:41,004 - INFO: asdfasdfasdf
+2024-11-23 15:55:41,013 - INFO: asdfasdfasdf
+2024-11-23 15:55:41,013 - INFO: 22
+2024-11-23 15:55:41,013 - INFO: asdfasdfasdf
+2024-11-23 15:55:41,047 - ERROR: Error uploading environmental data: 'str' object has no attribute 'isoformat'
+2024-11-23 15:56:13,203 - INFO: Existing sensor found with ID: 1
+2024-11-23 15:56:13,203 - ERROR: Error uploading environmental data: 'datetime.datetime' object has no attribute 'format'
+2024-11-23 15:56:32,624 - INFO: Existing sensor found with ID: 1
+2024-11-23 15:56:32,633 - INFO: Existing Thing found with ID: 37
+2024-11-23 15:56:32,642 - INFO: asdfasdfasdf
+2024-11-23 15:56:32,642 - INFO: 20
+2024-11-23 15:56:32,643 - INFO: asdfasdfasdf
+2024-11-23 15:56:32,651 - INFO: asdfasdfasdf
+2024-11-23 15:56:32,651 - INFO: 21
+2024-11-23 15:56:32,652 - INFO: asdfasdfasdf
+2024-11-23 15:56:32,661 - INFO: asdfasdfasdf
+2024-11-23 15:56:32,662 - INFO: 22
+2024-11-23 15:56:32,662 - INFO: asdfasdfasdf
+2024-11-23 15:56:32,691 - ERROR: Error uploading environmental data: 'str' object has no attribute 'isoformat'
+2024-11-23 15:56:45,063 - INFO: Existing sensor found with ID: 1
+2024-11-23 15:56:45,071 - INFO: Existing Thing found with ID: 37
+2024-11-23 15:56:45,082 - INFO: asdfasdfasdf
+2024-11-23 15:56:45,082 - INFO: 20
+2024-11-23 15:56:45,082 - INFO: asdfasdfasdf
+2024-11-23 15:56:45,090 - INFO: asdfasdfasdf
+2024-11-23 15:56:45,091 - INFO: 21
+2024-11-23 15:56:45,091 - INFO: asdfasdfasdf
+2024-11-23 15:56:45,100 - INFO: asdfasdfasdf
+2024-11-23 15:56:45,100 - INFO: 22
+2024-11-23 15:56:45,101 - INFO: asdfasdfasdf
+2024-11-23 15:56:45,132 - ERROR: Error uploading environmental data: 'str' object has no attribute 'isoformat'
+2024-11-23 16:02:00,619 - INFO: Existing sensor found with ID: 1
+2024-11-23 16:02:00,627 - INFO: Existing Thing found with ID: 37
+2024-11-23 16:02:00,637 - INFO: asdfasdfasdf
+2024-11-23 16:02:00,637 - INFO: 20
+2024-11-23 16:02:00,638 - INFO: asdfasdfasdf
+2024-11-23 16:02:00,646 - INFO: asdfasdfasdf
+2024-11-23 16:02:00,647 - INFO: 21
+2024-11-23 16:02:00,647 - INFO: asdfasdfasdf
+2024-11-23 16:02:00,655 - INFO: asdfasdfasdf
+2024-11-23 16:02:00,655 - INFO: 22
+2024-11-23 16:02:00,657 - INFO: asdfasdfasdf
+2024-11-23 16:02:00,829 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
+2024-11-23 16:02:00,839 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
+2024-11-23 16:02:00,848 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
+2024-11-23 16:02:00,861 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
+2024-11-23 16:02:00,873 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
+2024-11-23 16:02:00,886 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
+2024-11-23 16:02:00,898 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
+2024-11-23 16:02:00,912 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
+2024-11-23 16:02:00,931 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
+2024-11-23 16:02:00,936 - INFO: Successfully uploaded data for Room A1
