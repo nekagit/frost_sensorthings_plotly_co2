@@ -209,27 +209,6 @@ class SensorThingsManager:
             self.logger.error(f"Error creating Datastream: {str(e)}")
             return None
 
-
-    def process_csv(self, csv_path: str) -> pd.DataFrame:
-        """Process the environmental CSV file with specific format handling."""
-        try:
-            # Read CSV with semicolon delimiter, skipping the units row
-            df = pd.read_csv(csv_path, delimiter=';', skiprows=[1])
-            
-            # Rename columns to match our needs
-            df.columns = ['server_time', 'sensor_time', 'co2', 'temperature', 'humidity']
-            
-            # Convert time columns to datetime
-            df['server_time'] = pd.to_datetime(df['server_time'])
-            # Remove timezone info from sensor_time for consistency
-            df['sensor_time'] = pd.to_datetime(df['sensor_time'].str.split('+').str[0])
-            
-            return df
-            
-        except Exception as e:
-            self.logger.error(f"Error processing CSV: {str(e)}")
-            raise
-        
     def create_feature_of_interest(self, name: str, description: str, location: Dict) -> Optional[int]:
         """Create a FeatureOfInterest in the SensorThings API."""
         try:
@@ -296,23 +275,56 @@ class SensorThingsManager:
                 'FeatureOfInterest': {'@iot.id': feature_of_interest_id}
             }
             
-            response = requests.post(
+            requests.post(
                 f"{self.base_url}/Observations",
                 json=observation_payload,
                 headers={'Content-Type': 'application/json'}
             )
+            filter_query = (
+                f"result eq {result} and "
+                f"phenomenonTime eq '{formatted_time}' and "
+                f"Datastream/@iot.id eq {datastream_id} and "
+                f"FeatureOfInterest/@iot.id eq {feature_of_interest_id}"
+            )
             
-            if response.status_code in [200, 201]:
-                observation_data = response.json()
-                self.logger.info(f"Created observation with result {result} at time {formatted_time}")
-                return observation_data['@iot.id']
-            else:
-                self.logger.error(f"Failed to create Observation: {response.text}")
-                return None
+            fetch_response = requests.get(
+                f"{self.base_url}/Observations?$filter={filter_query}&$orderby=resultTime desc&$top=1",
+                headers={'Accept': 'application/json'}
+            )
+            
+            if fetch_response.status_code == 200:
+                fetch_data = fetch_response.json()
+                if fetch_data.get('value') and len(fetch_data['value']) > 0:
+                    observation_id = fetch_data['value'][0]['@iot.id']
+                    self.logger.info(f"Retrieved observation ID through fetch: {observation_id}")
+                    return observation_id
+                else:
+                    self.logger.error("Could not find created observation through fetch")
+                    return None
                 
         except Exception as e:
             self.logger.error(f"Error creating Observation: {str(e)}")
             return None
+
+    def process_csv(self, csv_path: str) -> pd.DataFrame:
+        """Process the environmental CSV file with specific format handling."""
+        try:
+            # Read CSV with semicolon delimiter, skipping the units row
+            df = pd.read_csv(csv_path, delimiter=';', skiprows=[1])
+            
+            # Rename columns to match our needs
+            df.columns = ['server_time', 'sensor_time', 'co2', 'temperature', 'humidity']
+            
+            # Convert time columns to datetime
+            df['server_time'] = pd.to_datetime(df['server_time'])
+            # Remove timezone info from sensor_time for consistency
+            df['sensor_time'] = pd.to_datetime(df['sensor_time'].str.split('+').str[0])
+            
+            return df
+            
+        except Exception as e:
+            self.logger.error(f"Error processing CSV: {str(e)}")
+            raise
 
     def upload_environmental_data(self, csv_path: str, location_name: str = "Default Location",
                                 latitude: float = 0.0, longitude: float = 0.0):
@@ -341,7 +353,7 @@ class SensorThingsManager:
             
             if not thing_id:
                 raise Exception("Failed to create Thing")
-
+            
             # Create FeatureOfInterest
             foi_id = self.create_feature_of_interest(
                 name=f"Location - {location_name}",
@@ -355,9 +367,66 @@ class SensorThingsManager:
             if not foi_id:
                 raise Exception("Failed to create FeatureOfInterest")
             
-            # Rest of the method remains the same until the observation creation part
+            # Create ObservedProperties
+            observed_properties = {
+                'CO2': self.create_observed_property(
+                    'CO2 Concentration',
+                    'Carbon dioxide concentration in air',
+                    'http://example.org/parameters/co2'
+                ),
+                'Temperature': self.create_observed_property(
+                    'Air Temperature',
+                    'Temperature of the air',
+                    'http://example.org/parameters/temperature'
+                ),
+                'Humidity': self.create_observed_property(
+                    'Relative Humidity',
+                    'Relative humidity in air',
+                    'http://example.org/parameters/humidity'
+                )
+            }
             
-            # Upload observations
+            # Create Datastreams
+            datastreams = {
+                'CO2': self.create_datastream(
+                    name=f"CO2 Measurements - {location_name}",
+                    description="CO2 concentration measurements",
+                    thing_id=thing_id,
+                    observed_property_id=observed_properties['CO2'],
+                    sensor_id=sensor_id,
+                    unit_of_measurement={
+                        'name': 'Parts per million',
+                        'symbol': 'ppm',
+                        'definition': 'http://example.org/units/ppm'
+                    }
+                ),
+                'Temperature': self.create_datastream(
+                    name=f"Temperature Measurements - {location_name}",
+                    description="Air temperature measurements",
+                    thing_id=thing_id,
+                    observed_property_id=observed_properties['Temperature'],
+                    sensor_id=sensor_id,
+                    unit_of_measurement={
+                        'name': 'Degrees Celsius',
+                        'symbol': '°C',
+                        'definition': 'http://example.org/units/celsius'
+                    }
+                ),
+                'Humidity': self.create_datastream(
+                    name=f"Humidity Measurements - {location_name}",
+                    description="Relative humidity measurements",
+                    thing_id=thing_id,
+                    observed_property_id=observed_properties['Humidity'],
+                    sensor_id=sensor_id,
+                    unit_of_measurement={
+                        'name': 'Percentage',
+                        'symbol': '%',
+                        'definition': 'http://example.org/units/percentage'
+                    }
+                )
+            }
+            
+           # Upload observations
             for _, row in df.iterrows():
                 # Format the timestamp properly
                 timestamp = row['sensor_time'].strftime('%Y-%m-%dT%H:%M:%S')

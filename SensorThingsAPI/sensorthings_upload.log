@@ -138,3 +138,42 @@
 2024-11-23 16:02:00,912 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
 2024-11-23 16:02:00,931 - ERROR: Failed to create Observation: {"code":400,"type":"error","message":"No FeatureOfInterest provided, and none can be generated."}
 2024-11-23 16:02:00,936 - INFO: Successfully uploaded data for Room A1
+2024-11-23 16:04:08,650 - INFO: Existing sensor found with ID: 1
+2024-11-23 16:04:08,658 - INFO: Existing Thing found with ID: 37
+2024-11-23 16:04:09,388 - ERROR: Error creating FeatureOfInterest: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:04:09,390 - ERROR: Error uploading environmental data: Failed to create FeatureOfInterest
+2024-11-23 16:07:34,526 - INFO: Existing sensor found with ID: 1
+2024-11-23 16:07:34,535 - INFO: Existing Thing found with ID: 37
+2024-11-23 16:07:34,547 - INFO: Found existing FeatureOfInterest with ID: 1
+2024-11-23 16:07:34,556 - INFO: asdfasdfasdf
+2024-11-23 16:07:34,556 - INFO: 20
+2024-11-23 16:07:34,556 - INFO: asdfasdfasdf
+2024-11-23 16:07:34,565 - INFO: asdfasdfasdf
+2024-11-23 16:07:34,565 - INFO: 21
+2024-11-23 16:07:34,565 - INFO: asdfasdfasdf
+2024-11-23 16:07:34,574 - INFO: asdfasdfasdf
+2024-11-23 16:07:34,575 - INFO: 22
+2024-11-23 16:07:34,575 - INFO: asdfasdfasdf
+2024-11-23 16:07:34,777 - ERROR: Error creating Observation: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:07:34,794 - ERROR: Error creating Observation: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:07:34,812 - ERROR: Error creating Observation: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:07:34,828 - ERROR: Error creating Observation: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:07:34,848 - ERROR: Error creating Observation: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:07:34,868 - ERROR: Error creating Observation: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:07:34,887 - ERROR: Error creating Observation: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:07:34,904 - ERROR: Error creating Observation: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:07:34,920 - ERROR: Error creating Observation: Expecting value: line 1 column 1 (char 0)
+2024-11-23 16:07:34,921 - INFO: Successfully uploaded data for Room A1
+2024-11-23 16:10:18,421 - INFO: Existing sensor found with ID: 1
+2024-11-23 16:10:18,430 - INFO: Existing Thing found with ID: 37
+2024-11-23 16:10:18,439 - INFO: Found existing FeatureOfInterest with ID: 1
+2024-11-23 16:10:18,449 - INFO: asdfasdfasdf
+2024-11-23 16:10:18,450 - INFO: 20
+2024-11-23 16:10:18,450 - INFO: asdfasdfasdf
+2024-11-23 16:10:18,459 - INFO: asdfasdfasdf
+2024-11-23 16:10:18,460 - INFO: 21
+2024-11-23 16:10:18,460 - INFO: asdfasdfasdf
+2024-11-23 16:10:18,471 - INFO: asdfasdfasdf
+2024-11-23 16:10:18,472 - INFO: 22
+2024-11-23 16:10:18,472 - INFO: asdfasdfasdf
+2024-11-23 16:10:18,717 - INFO: Successfully uploaded data for Room A1
